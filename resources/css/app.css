@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+    --font-serif: "Playfair Display", serif;
+    --font-sans: "Inter", sans-serif;
+    --color-gallery-dark: #1a1a1a;
+    --color-gallery-gray: #f3f4f6;
+}
+
+/* Animation d'apparition simple */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Animation pour les cartes Masonry */
+.masonry-card {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+    transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+
+.masonry-card.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+[x-cloak] { display: none !important; }
