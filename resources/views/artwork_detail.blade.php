@@ -7,7 +7,13 @@
         <div class="flex flex-col lg:flex-row gap-16">
             <!-- Colonne de Gauche : Images -->
             <div class="w-full lg:w-1/2 flex flex-col gap-4">
-                <div class="bg-[#dcdcdc] rounded-xl w-full h-[500px] lg:h-[650px]"></div>
+                <div class="bg-[#dcdcdc] rounded-xl w-full h-[500px] lg:h-[650px] overflow-hidden">
+                    @if($artwork->image)
+                        <img src="{{ asset('storage/' . $artwork->image) }}"
+                             alt="{{ $artwork->title }}"
+                             class="w-full h-full object-cover">
+                    @endif
+                </div>
                 <div class="flex gap-4">
                     <div class="bg-[#dcdcdc] rounded-xl w-32 h-32 lg:w-40 lg:h-40"></div>
                     <div class="bg-[#dcdcdc] rounded-xl w-32 h-32 lg:w-40 lg:h-40"></div>
@@ -17,16 +23,16 @@
             <!-- Colonne de Droite : Informations -->
             <div class="w-full lg:w-1/2 flex flex-col pt-2 lg:pt-4">
                 <!-- Le titre est maintenant un lien vers la page Artiste -->
-                <a href="{{ route('artist.detail') }}" class="block text-4xl lg:text-5xl font-normal mb-6 text-[#1a1a1a] hover:opacity-70 transition">
-                    Julie Legrand
+                <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block text-4xl lg:text-5xl font-normal mb-6 text-[#1a1a1a] hover:opacity-70 transition">
+                    {{ $artwork->artist->name }}
                 </a>
 
                 <div class="space-y-2 text-lg lg:text-xl text-[#666666] font-light leading-relaxed max-w-lg">
-                    <p>Soulever les montagnes, 2020</p>
-                    <p>Verre plat et blocs de pierre en grès rose de Saint Gaudens</p>
-                    <p>7×5×2.40m</p>
-                    <p>Prix sur demande</p>
-                    <p>Vue de l'exposition "Nous sommes des terres fertiles: Fondation Ecurreuil, Toulouse (2020).</p>
+                    <p>{{ $artwork->title }}, {{ $artwork->year }}</p>
+                    <p>{{ $artwork->technique }}</p>
+                    <p>{{ $artwork->dimensions }}</p>
+                    <p>{{ $artwork->price ? number_format($artwork->price, 0, ',', ' ') . ' FCFA' : 'Prix sur demande' }}</p>
+                    <p>{{ $artwork->description }}</p>
                 </div>
 
                 <!-- Bouton Plus d'info qui ouvre le modal -->
@@ -72,8 +78,14 @@
 
                 <!-- Colonne Gauche : Titre et Image -->
                 <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col">
-                    <h2 class="text-2xl font-normal mb-8 text-[#1a1a1a]">Portrait professionnel</h2>
-                    <div class="bg-[#dcdcdc] w-full h-72 md:h-80"></div>
+                    <h2 class="text-2xl font-normal mb-8 text-[#1a1a1a]">{{ $artwork->title }}</h2>
+                    @if($artwork->image)
+                        <img src="{{ asset('storage/' . $artwork->image) }}"
+                             alt="{{ $artwork->title }}"
+                             class="w-full h-72 md:h-80 object-cover">
+                    @else
+                        <div class="bg-[#dcdcdc] w-full h-72 md:h-80"></div>
+                    @endif
                 </div>
 
                 <!-- Colonne Droite : Formulaire -->
@@ -92,7 +104,7 @@
                         <!-- Téléphone & Sujet -->
                         <div class="grid grid-cols-2 gap-4">
                             <input type="tel" placeholder="Téléphone" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
-                            <input type="text" value="Portrait professionnel" readonly class="w-full border border-gray-300 px-4 py-3 text-sm bg-gray-50 text-gray-600 focus:outline-none">
+                            <input type="text" value="{{ $artwork->title }}" readonly class="w-full border border-gray-300 px-4 py-3 text-sm bg-gray-50 text-gray-600 focus:outline-none">
                         </div>
 
                         <!-- Message -->

@@ -103,204 +103,129 @@
     <section class="container mx-auto px-4 py-8 max-w-7xl">
         <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-6 space-y-6">
 
+            @php
+                $artworksArray = $artworks->toArray();
+                $total = count($artworksArray);
+                // Compteur global pour attribuer les bonnes hauteurs
+                $globalIndex = 0;
+            @endphp
+
             <!-- Colonne 1 -->
             <div class="space-y-6 flex flex-col">
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-96">
-                        <div class="w-full h-full bg-[#e67e22] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 1</div>
+                @foreach($artworks->take(3) as $artwork)
+                    @php $heightClass = $globalIndex == 0 ? 'h-96' : ($globalIndex == 1 ? 'h-64' : 'h-64'); $globalIndex++; @endphp
+                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
+                        <div class="overflow-hidden {{ $heightClass }}">
+                            @if($artwork->image)
+                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                            @else
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
+                            @endif
+                        </div>
+                        <div class="p-4 bg-white relative z-10">
+                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
+                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
+                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
+                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
+                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
+                        </div>
                     </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Charbel Coffi</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Réconciliation</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2024</p>
-                        <p class="text-[11px] text-gray-400">Kaolin et latérite</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-64">
-                        <div class="w-full h-full bg-gray-200 group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-gray-500">Image 2</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Sika da Silveira</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Celles qui transmettent</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2026</p>
-                        <p class="text-[11px] text-gray-400">Peinture</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-64">
-                        <div class="w-full h-full bg-gray-200 group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-gray-500">Image 3</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Princesse Keirath</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Transmission</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2026</p>
-                        <p class="text-[11px] text-gray-400">Sculpture</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Colonne 2 -->
             <div class="space-y-6 flex flex-col">
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-48">
-                        <div class="w-full h-full bg-[#2c3e50] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 4</div>
+                @foreach($artworks->skip(3)->take(4) as $artwork)
+                    @php
+                        $heightClass = $globalIndex == 3 ? 'h-48' : ($globalIndex == 4 ? 'h-96' : ($globalIndex == 5 ? 'h-64' : 'h-64'));
+                        $globalIndex++;
+                    @endphp
+                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
+                        <div class="overflow-hidden {{ $heightClass }}">
+                            @if($artwork->image)
+                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                            @else
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
+                            @endif
+                        </div>
+                        <div class="p-4 bg-white relative z-10">
+                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
+                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
+                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
+                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
+                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
+                        </div>
                     </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Jamal Chleuh</a>
-                        <p class="text-sm text-gray-500 italic mt-1">L'Art nous unit</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2025</p>
-                        <p class="text-[11px] text-gray-400">Mode & Peinture</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-96">
-                        <div class="w-full h-full bg-[#87ceeb] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 5</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Zanele Muholi</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Dig Where You Stand</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2024</p>
-                        <p class="text-[11px] text-gray-400">Photographie</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-64">
-                        <div class="w-full h-full bg-gray-200 group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-gray-500">Image 6</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Charbel Coffi</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Rooted</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2025</p>
-                        <p class="text-[11px] text-gray-400">Installation</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-64">
-                        <div class="w-full h-full bg-[#34495e] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 7</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Sika da Silveira</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Féminin pluriel</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2025</p>
-                        <p class="text-[11px] text-gray-400">Peinture</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Colonne 3 -->
             <div class="space-y-6 flex flex-col">
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-96">
-                        <div class="w-full h-full bg-[#bdc3c7] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-gray-500">Image 8</div>
+                @foreach($artworks->skip(7)->take(2) as $artwork)
+                    @php $heightClass = $globalIndex == 7 ? 'h-96' : 'h-[500px]'; $globalIndex++; @endphp
+                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
+                        <div class="overflow-hidden {{ $heightClass }}">
+                            @if($artwork->image)
+                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                            @else
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
+                            @endif
+                        </div>
+                        <div class="p-4 bg-white relative z-10">
+                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
+                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
+                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
+                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
+                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
+                        </div>
                     </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Princesse Keirath</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Mémoire</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2024</p>
-                        <p class="text-[11px] text-gray-400">Sculpture</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-[500px]">
-                        <div class="w-full h-full bg-[#d2b48c] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 9</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Jamal Chleuh</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Fusion</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2024</p>
-                        <p class="text-[11px] text-gray-400">Mode</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Colonne 4 -->
             <div class="space-y-6 flex flex-col">
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-80">
-                        <div class="w-full h-full bg-[#8e44ad] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 10</div>
+                @foreach($artworks->skip(9)->take(3) as $artwork)
+                    @php $heightClass = $globalIndex == 9 ? 'h-80' : ($globalIndex == 10 ? 'h-96' : 'h-96'); $globalIndex++; @endphp
+                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
+                        <div class="overflow-hidden {{ $heightClass }}">
+                            @if($artwork->image)
+                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                            @else
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
+                            @endif
+                        </div>
+                        <div class="p-4 bg-white relative z-10">
+                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
+                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
+                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
+                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
+                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
+                        </div>
                     </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Zanele Muholi</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Somnyama Ngonyama</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2023</p>
-                        <p class="text-[11px] text-gray-400">Photographie</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-96">
-                        <div class="w-full h-full bg-[#3498db] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 11</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Charbel Coffi</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Écologie</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2023</p>
-                        <p class="text-[11px] text-gray-400">Technique mixte</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-96">
-                        <div class="w-full h-full bg-[#1a1a1a] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 12</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Sika da Silveira</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Racines</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2024</p>
-                        <p class="text-[11px] text-gray-400">Peinture</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Colonne 5 -->
             <div class="space-y-6 flex flex-col">
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-80">
-                        <div class="w-full h-full bg-[#ecf0f1] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-gray-500">Image 13</div>
+                @foreach($artworks->skip(12)->take(3) as $artwork)
+                    @php $heightClass = $globalIndex == 12 ? 'h-80' : ($globalIndex == 13 ? 'h-64' : 'h-96'); $globalIndex++; @endphp
+                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
+                        <div class="overflow-hidden {{ $heightClass }}">
+                            @if($artwork->image)
+                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                            @else
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
+                            @endif
+                        </div>
+                        <div class="p-4 bg-white relative z-10">
+                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
+                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
+                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
+                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
+                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
+                        </div>
                     </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Princesse Keirath</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Héritage</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2025</p>
-                        <p class="text-[11px] text-gray-400">Sculpture</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-64">
-                        <div class="w-full h-full bg-[#f1c40f] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 14</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Jamal Chleuh</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Bénin Brille</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2025</p>
-                        <p class="text-[11px] text-gray-400">Mode</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
-                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <div class="overflow-hidden h-96">
-                        <div class="w-full h-full bg-[#95a5a6] group-hover:scale-110 transition-transform duration-700 ease-in-out flex items-center justify-center text-white/50">Image 15</div>
-                    </div>
-                    <div class="p-4 bg-white relative z-10">
-                        <a href="{{ route('artist.detail') }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">Zanele Muholi</a>
-                        <p class="text-sm text-gray-500 italic mt-1">Identité</p>
-                        <p class="text-[11px] text-gray-400 mt-3">2022</p>
-                        <p class="text-[11px] text-gray-400">Photographie</p>
-                        <a href="{{ route('artwork.detail') }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
         </div>
