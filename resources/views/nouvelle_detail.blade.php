@@ -5,7 +5,9 @@
 
         <!-- En-tête de l'article -->
         <header class="text-center mb-12">
-            <h1 class="text-2xl md:text-3xl font-medium mb-4 text-[#1a1a1a]">Retour sur l'exposition "Dig Where You Stand"</h1>
+            <h1 class="text-2xl md:text-3xl font-medium mb-4 text-[#1a1a1a]">
+                Retour sur l'exposition "Dig Where You Stand"
+            </h1>
             <p class="text-sm text-gray-500 flex items-center justify-center gap-1.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 15 juillet 2024
@@ -24,7 +26,7 @@
                 Cet événement a été un moment fort pour la scène artistique béninoise et pour notre galerie. Nous avons eu l'honneur de présenter les œuvres de Zanele Muholi, Charbel Coffi, et de nombreux autres artistes engagés. L'exposition a attiré un public varié : collectionneurs, étudiants, curieux, et professionnels du monde de l'art.
             </p>
 
-            <!-- Image 1 -->
+            <!-- Image 1 (placeholder gris, comme sur la maquette) -->
             <div class="my-10">
                 <div class="bg-[#dcdcdc] w-full h-[350px] flex items-center justify-center text-gray-400">
                     Vue de l'exposition "Dig Where You Stand"
@@ -40,7 +42,7 @@
                 Nous remercions chaleureusement tous les artistes, partenaires et visiteurs qui ont contribué au succès de cette exposition. Un merci particulier à Zanele Muholi pour sa confiance et son engagement.
             </p>
 
-            <!-- Image 2 -->
+            <!-- Image 2 (placeholder gris, comme sur la maquette) -->
             <div class="my-10">
                 <div class="bg-[#dcdcdc] w-full h-[350px] flex items-center justify-center text-gray-400">
                     Performance lors du vernissage
@@ -89,7 +91,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Article lié 1 -->
-                <a href="{{ route('nouvelle.detail') }}" class="flex flex-col group">
+                <a href="{{ route('nouvelle.detail', 'charbel-coffi-expose-lagos-rooted') }}" class="flex flex-col group">
                     <h4 class="text-base font-semibold mb-2 group-hover:underline cursor-pointer text-gray-900">Charbel Coffi expose à Lagos pour "Rooted"</h4>
                     <p class="text-sm text-gray-500 flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -97,7 +99,7 @@
                     </p>
                 </a>
                 <!-- Article lié 2 -->
-                <a href="{{ route('nouvelle.detail') }}" class="flex flex-col group">
+                <a href="{{ route('nouvelle.detail', 'celles-qui-transmettent-exposition') }}" class="flex flex-col group">
                     <h4 class="text-base font-semibold mb-2 group-hover:underline cursor-pointer text-gray-900">"Celles qui transmettent" : une exposition dédiée aux artistes plasticiennes</h4>
                     <p class="text-sm text-gray-500 flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -105,7 +107,7 @@
                     </p>
                 </a>
                 <!-- Article lié 3 -->
-                <a href="{{ route('nouvelle.detail') }}" class="flex flex-col group">
+                <a href="{{ route('nouvelle.detail', 'ateliers-ouverts') }}" class="flex flex-col group">
                     <h4 class="text-base font-semibold mb-2 group-hover:underline cursor-pointer text-gray-900">Ateliers ouverts : découvrez les coulisses de la création</h4>
                     <p class="text-sm text-gray-500 flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -115,5 +117,5 @@
             </div>
         </div>
 
-    </article>
+    </article> 
 @endsection
