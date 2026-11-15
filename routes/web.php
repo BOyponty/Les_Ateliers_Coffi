@@ -1,28 +1,31 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AuthController;
 use App\Models\Artist;
 use App\Models\Artwork;
 use App\Models\Exhibition;
 use App\Models\News;
 use Illuminate\Support\Facades\Route;
 
+// ==========================================
+// ROUTES PUBLIQUES
+// ==========================================
+
 Route::get('/', function () {
     return view('home', [
-        'exhibitions' => \App\Models\Exhibition::latest()->take(4)->get(),
-        'artists' => \App\Models\Artist::all(),
-        'artworks' => \App\Models\Artwork::with('artist')->latest()->take(15)->get(),
+        'exhibitions' => Exhibition::latest()->take(4)->get(),
+        'artists' => Artist::all(),
+        'artworks' => Artwork::with('artist')->latest()->take(15)->get(),
     ]);
 })->name('home');
 
-// Page Artistes
 Route::get('/artistes', function () {
     return view('artists', [
         'artists' => Artist::all(),
     ]);
 })->name('artists');
 
-// Page détail d'un artiste
 Route::get('/artiste/{slug}', function ($slug) {
     $artist = Artist::where('slug', $slug)->firstOrFail();
     return view('artist_detail', [
@@ -31,7 +34,6 @@ Route::get('/artiste/{slug}', function ($slug) {
     ]);
 })->name('artist.detail');
 
-// Page Œuvres
 Route::get('/oeuvres', function () {
     return view('artworks', [
         'artworks' => Artwork::with('artist')->latest()->get(),
@@ -39,7 +41,6 @@ Route::get('/oeuvres', function () {
     ]);
 })->name('artworks');
 
-// Page détail d'une œuvre
 Route::get('/oeuvre/{slug}', function ($slug) {
     $artwork = Artwork::with('artist')->where('slug', $slug)->firstOrFail();
     return view('artwork_detail', [
@@ -49,19 +50,17 @@ Route::get('/oeuvre/{slug}', function ($slug) {
 
 Route::get('/expositions', function () {
     return view('expositions', [
-        'exhibitions' => \App\Models\Exhibition::latest()->get(),
-        'artworks' => \App\Models\Artwork::with('artist')->latest()->get(), // <-- C'est la ligne qui manquait
+        'exhibitions' => Exhibition::latest()->get(),
+        'artworks' => Artwork::with('artist')->latest()->get(),
     ]);
 })->name('expositions');
 
-// Page Nouvelles
 Route::get('/nouvelles', function () {
     return view('nouvelles', [
         'news' => News::latest()->get(),
     ]);
 })->name('nouvelles');
 
-// Page détail d'une nouvelle
 Route::get('/nouvelle/{slug}', function ($slug) {
     $news = News::where('slug', $slug)->firstOrFail();
     return view('nouvelle_detail', [
@@ -69,20 +68,37 @@ Route::get('/nouvelle/{slug}', function ($slug) {
     ]);
 })->name('nouvelle.detail');
 
-// Page Contact
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
-// Routes Breeze (Auth, Dashboard, etc.)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// ==========================================
+// ROUTES D'AUTHENTIFICATION
+// ==========================================
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// ==========================================
+// ROUTES PROTÉGÉES (ADMIN)
+// ==========================================
+
+// Redirection de /dashboard (Breeze) vers notre tableau de bord admin
+Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+// Le vrai tableau de bord (qui pointe vers le fichier admin/dashboard.blade.php)
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->middleware(['auth'])->name('admin.dashboard');
+
+// Routes de profil (Breeze)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Routes d'authentification de Breeze (si vous les gardez)
 require __DIR__.'/auth.php';
