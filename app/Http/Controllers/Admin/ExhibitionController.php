@@ -3,63 +3,82 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Exhibition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ExhibitionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $exhibitions = Exhibition::latest()->get();
+        return view('admin.exhibitions.index', compact('exhibitions'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.exhibitions.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:5120',
+        ]);
+
+        $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('exhibitions', 'public');
+        }
+
+        Exhibition::create($validated);
+
+        return redirect()->route('admin.exhibitions.index')
+            ->with('success', 'L\'exposition a bien été ajoutée.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Exhibition $exhibition)
     {
-        //
+        return view('admin.exhibitions.edit', compact('exhibition'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Exhibition $exhibition)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:5120',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($exhibition->image) {
+                Storage::disk('public')->delete($exhibition->image);
+            }
+            $validated['image'] = $request->file('image')->store('exhibitions', 'public');
+        }
+
+        $exhibition->update($validated);
+
+        return redirect()->route('admin.exhibitions.index')
+            ->with('success', 'L\'exposition a bien été modifiée.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Exhibition $exhibition)
     {
-        //
-    }
+        if ($exhibition->image) {
+            Storage::disk('public')->delete($exhibition->image);
+        }
+        $exhibition->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.exhibitions.index')
+            ->with('success', 'L\'exposition a bien été supprimée.');
     }
 }

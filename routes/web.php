@@ -118,6 +118,20 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('artists', \App\Http\Controllers\Admin\ArtistController::class)->except(['show']);
 });
 
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+    // CRUD des œuvres
+    Route::resource('artworks', ArtworkController::class)->except(['show']);
+
+    // CRUD des artistes
+    Route::resource('artists', \App\Http\Controllers\Admin\ArtistController::class)->except(['show']);
+
+    // CRUD des expositions (à ajouter)
+    Route::resource('exhibitions', \App\Http\Controllers\Admin\ExhibitionController::class)->except(['show']);
+});
 // Routes d'authentification de Breeze
 require __DIR__.'/auth.php';
 
