@@ -29,20 +29,36 @@
         <!-- Actions rapides -->
         <h2 class="text-xl font-medium mb-6">Actions rapides</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <a href="#" class="bg-[#1a1a1a] text-white p-6 text-center hover:bg-gray-800 transition flex flex-col items-center justify-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+
+            <!-- Bouton Ajouter une œuvre -->
+            <a href="{{ route('admin.artworks.create') }}" class="bg-[#1a1a1a] text-white p-6 text-center hover:bg-gray-800 transition flex flex-col items-center justify-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
                 Ajouter une œuvre
             </a>
+
+            <!-- Bouton Ajouter un artiste -->
             <a href="#" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
                 Ajouter un artiste
             </a>
+
+            <!-- Bouton Créer une exposition -->
             <a href="#" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
                 Créer une exposition
             </a>
+
+            <!-- Bouton Publier une actualité -->
             <a href="#" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
                 Publier une actualité
             </a>
         </div>

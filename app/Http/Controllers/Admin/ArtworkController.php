@@ -3,63 +3,93 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Artist;
+use App\Models\Artwork;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ArtworkController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $artworks = Artwork::with('artist')->latest()->get();
+        return view('admin.artworks.index', compact('artworks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $artists = Artist::orderBy('name')->get();
+        return view('admin.artworks.create', compact('artists'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'artist_id' => 'required|exists:artists,id',
+            'description' => 'nullable|string',
+            'technique' => 'nullable|string|max:255',
+            'dimensions' => 'nullable|string|max:255',
+            'year' => 'nullable|string|max:10',
+            'price' => 'nullable|numeric|min:0',
+            'status' => 'required|in:disponible,vendu,exposé',
+            'image' => 'nullable|image|max:5120',
+        ]);
+
+        $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('artworks', 'public');
+        }
+
+        Artwork::create($validated);
+
+        return redirect()->route('admin.artworks.index')
+            ->with('success', 'L\'œuvre a bien été ajoutée.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Artwork $artwork)
     {
-        //
+        $artists = Artist::orderBy('name')->get();
+        return view('admin.artworks.edit', compact('artwork', 'artists'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Artwork $artwork)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'artist_id' => 'required|exists:artists,id',
+            'description' => 'nullable|string',
+            'technique' => 'nullable|string|max:255',
+            'dimensions' => 'nullable|string|max:255',
+            'year' => 'nullable|string|max:10',
+            'price' => 'nullable|numeric|min:0',
+            'status' => 'required|in:disponible,vendu,exposé',
+            'image' => 'nullable|image|max:5120',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($artwork->image) {
+                Storage::disk('public')->delete($artwork->image);
+            }
+            $validated['image'] = $request->file('image')->store('artworks', 'public');
+        }
+
+        $artwork->update($validated);
+
+        return redirect()->route('admin.artworks.index')
+            ->with('success', 'L\'œuvre a bien été modifiée.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Artwork $artwork)
     {
-        //
-    }
+        if ($artwork->image) {
+            Storage::disk('public')->delete($artwork->image);
+        }
+        $artwork->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.artworks.index')
+            ->with('success', 'L\'œuvre a bien été supprimée.');
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\ArtworkController;
 use App\Models\Artist;
 use App\Models\Artwork;
 use App\Models\Exhibition;
@@ -83,15 +84,20 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ROUTES PROTÉGÉES (ADMIN)
 // ==========================================
 
-// Redirection de /dashboard (Breeze) vers notre tableau de bord admin
+// Redirection de /dashboard vers le tableau de bord admin
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-// Le vrai tableau de bord (qui pointe vers le fichier admin/dashboard.blade.php)
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth'])->name('admin.dashboard');
+// Groupe des routes admin (une seule définition)
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+    // CRUD des œuvres
+    Route::resource('artworks', ArtworkController::class)->except(['show']);
+});
 
 // Routes de profil (Breeze)
 Route::middleware('auth')->group(function () {
@@ -100,5 +106,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Routes d'authentification de Breeze (si vous les gardez)
+// Routes d'authentification de Breeze
 require __DIR__.'/auth.php';
+
+ 
