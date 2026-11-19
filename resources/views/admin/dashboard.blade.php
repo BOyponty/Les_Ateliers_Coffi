@@ -38,8 +38,8 @@
                 Ajouter une œuvre
             </a>
 
-            <!-- Bouton Ajouter un artiste -->
-            <a href="#" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
+            <!-- Bouton Ajouter un artiste (corrigé) -->
+            <a href="{{ route('admin.artists.create') }}" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
