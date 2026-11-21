@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Exhibition extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'title',
-        'slug',
-        'description',
-        'start_date',
-        'end_date',
-        'image',
-    ];
+protected $fillable = [
+    'title',
+    'slug',
+    'description',
+    'start_date',
+    'end_date',
+    'image',
+    'image_2', // <-- Ajouté
+];
 }

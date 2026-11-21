@@ -89,14 +89,26 @@
         <!-- Section 5 : Newsletter & Carte -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <!-- Bloc Newsletter -->
+            <!-- Bloc Newsletter (MISE À JOUR) -->
             <div class="bg-white border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-8 flex flex-col justify-between">
                 <div>
                     <h3 class="text-[15px] font-medium text-gray-800 mb-6">Inscription à la Newsletter</h3>
-                    <form class="space-y-4">
+
+                    @if(session('newsletter_success'))
+                        <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 mb-4 text-sm">
+                            {{ session('newsletter_success') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('newsletter.store') }}" method="POST" class="space-y-4">
+                        @csrf
                         <div>
                             <label class="block text-[13px] text-gray-600 mb-2 font-light">Email</label>
-                            <input type="email" class="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-gray-400">
+                            <input type="email" name="email" required
+                                   class="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-gray-400">
+                            @error('email')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <button type="submit" class="bg-[#1a1a1a] text-white px-6 py-2.5 text-xs font-medium uppercase tracking-widest hover:bg-gray-800 transition">
                             S'inscrire

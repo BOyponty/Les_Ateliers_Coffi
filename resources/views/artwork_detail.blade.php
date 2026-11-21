@@ -1,6 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
+    <!-- Message de succès (s'affiche après l'envoi du formulaire) -->
+    @if(session('success'))
+        <div class="container mx-auto px-4 mt-8 max-w-7xl">
+            <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
     <!-- On initialise la variable Alpine pour gérer l'ouverture du modal -->
     <section class="container mx-auto px-4 py-12 max-w-7xl" x-data="{ infoModalOpen: false }">
 
@@ -90,25 +99,28 @@
 
                 <!-- Colonne Droite : Formulaire -->
                 <div class="w-full md:w-1/2 p-10 md:p-14 pt-4 md:pt-14 flex flex-col justify-center">
-                    <form @submit.prevent class="space-y-4">
+                    <form action="{{ route('contact.request.store') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <!-- Champ caché pour l'ID de l'œuvre -->
+                        <input type="hidden" name="artwork_id" value="{{ $artwork->id }}">
 
                         <!-- Nom & Prénom -->
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="text" placeholder="Nom" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
-                            <input type="text" placeholder="Prénom" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
+                            <input type="text" name="last_name" placeholder="Nom" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
+                            <input type="text" name="first_name" placeholder="Prénom" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
                         </div>
 
                         <!-- Email -->
-                        <input type="email" placeholder="Email" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
+                        <input type="email" name="email" placeholder="Email" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
 
                         <!-- Téléphone & Sujet -->
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="tel" placeholder="Téléphone" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
+                            <input type="tel" name="phone" placeholder="Téléphone" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
                             <input type="text" value="{{ $artwork->title }}" readonly class="w-full border border-gray-300 px-4 py-3 text-sm bg-gray-50 text-gray-600 focus:outline-none">
                         </div>
 
                         <!-- Message -->
-                        <textarea placeholder="Message" rows="5" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black resize-none"></textarea>
+                        <textarea name="message" placeholder="Message" rows="5" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black resize-none"></textarea>
 
                         <!-- Bouton Envoyer -->
                         <button type="submit" class="w-full bg-[#0f1713] text-white py-4 text-sm tracking-wider uppercase hover:bg-black transition mt-2">

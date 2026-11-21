@@ -105,16 +105,30 @@
             </div>
         </section>
 
-        <!-- Section Newsletter -->
+        <!-- Section Newsletter (MISE À JOUR) -->
         <section class="container mx-auto px-4 py-16 max-w-7xl">
             <div class="border border-gray-200 rounded-lg p-8 md:p-12 max-w-4xl mx-auto">
                 <h3 class="font-serif text-2xl mb-6">Inscrivez-vous à notre newsletter.</h3>
-                <form class="space-y-4 max-w-2xl" @submit.prevent="alert('Merci ! Votre inscription sera effective avec le Backend.')">
+
+                @if(session('newsletter_success'))
+                    <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 mb-6">
+                        {{ session('newsletter_success') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('newsletter.store') }}" method="POST" class="space-y-4 max-w-2xl">
+                    @csrf
                     <div>
                         <label class="block text-sm text-gray-600 mb-1">Email</label>
-                        <input type="email" placeholder="Entrez votre email" required class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        <input type="email" name="email" placeholder="Entrez votre email" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        @error('email')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
-                    <button type="submit" class="px-6 py-3 bg-[#1a1a1a] text-white font-medium rounded hover:bg-gray-800 transition uppercase tracking-wider text-sm">S'inscrire</button>
+                    <button type="submit" class="px-6 py-3 bg-[#1a1a1a] text-white font-medium rounded hover:bg-gray-800 transition uppercase tracking-wider text-sm">
+                        S'inscrire
+                    </button>
                 </form>
             </div>
         </section>

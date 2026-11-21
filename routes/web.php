@@ -3,6 +3,13 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\ArtworkController;
+use App\Http\Controllers\Admin\ArtistController;
+use App\Http\Controllers\Admin\ExhibitionController;
+use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
+use App\Http\Controllers\Admin\ContactRequestController as AdminContactRequestController;
+use App\Http\Controllers\ContactRequestController;
+use App\Http\Controllers\NewsletterController;
 use App\Models\Artist;
 use App\Models\Artwork;
 use App\Models\Exhibition;
@@ -73,6 +80,12 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
+// Route pour le formulaire de contact (modal)
+Route::post('/contact-request', [ContactRequestController::class, 'store'])->name('contact.request.store');
+
+// Newsletter (formulaire public)
+Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+
 // ==========================================
 // ROUTES D'AUTHENTIFICATION
 // ==========================================
@@ -89,7 +102,7 @@ Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-// Groupe des routes admin (une seule définition)
+// Groupe admin
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -97,6 +110,21 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // CRUD des œuvres
     Route::resource('artworks', ArtworkController::class)->except(['show']);
+
+    // CRUD des artistes
+    Route::resource('artists', ArtistController::class)->except(['show']);
+
+    // CRUD des expositions
+    Route::resource('exhibitions', ExhibitionController::class)->except(['show']);
+
+    // CRUD des actualités
+    Route::resource('news', NewsController::class)->except(['show']);
+
+    // Gestion des demandes de contact
+    Route::resource('contacts', AdminContactRequestController::class)->only(['index', 'show', 'update', 'destroy']);
+
+    // Gestion des abonnés newsletter
+    Route::get('/newsletter', [AdminNewsletterController::class, 'index'])->name('newsletter.index');
 });
 
 // Routes de profil (Breeze)
@@ -106,51 +134,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+Route::get('/expositions', function () {
+    return view('expositions', [
+        'exhibitions' => Exhibition::latest()->get(),
+        'artworks' => Artwork::with('artist')->latest()->get(),
+    ]);
+})->name('expositions');
 
-    // CRUD des œuvres
-    Route::resource('artworks', ArtworkController::class)->except(['show']);
-
-    // CRUD des artistes
-    Route::resource('artists', \App\Http\Controllers\Admin\ArtistController::class)->except(['show']);
-});
-
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-    // CRUD des œuvres
-    Route::resource('artworks', ArtworkController::class)->except(['show']);
-
-    // CRUD des artistes
-    Route::resource('artists', \App\Http\Controllers\Admin\ArtistController::class)->except(['show']);
-
-    // CRUD des expositions (à ajouter)
-    Route::resource('exhibitions', \App\Http\Controllers\Admin\ExhibitionController::class)->except(['show']);
-});
-
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-    // CRUD des œuvres
-    Route::resource('artworks', ArtworkController::class)->except(['show']);
-
-    // CRUD des artistes
-    Route::resource('artists', \App\Http\Controllers\Admin\ArtistController::class)->except(['show']);
-
-    // CRUD des expositions
-    Route::resource('exhibitions', \App\Http\Controllers\Admin\ExhibitionController::class)->except(['show']);
-
-    // CRUD des actualités (à ajouter)
-    Route::resource('news', \App\Http\Controllers\Admin\NewsController::class)->except(['show']);
-});
 // Routes d'authentification de Breeze
 require __DIR__.'/auth.php';
-
-

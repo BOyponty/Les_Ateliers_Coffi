@@ -10,27 +10,38 @@
             </form>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <!-- Statistiques -->
-            <div class="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+        <!-- Statistiques (4 colonnes, toutes cliquables avec effet) -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            <!-- Carte Œuvres -->
+            <a href="{{ route('admin.artworks.index') }}" class="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-lg hover:border-black transition-all duration-300 block">
                 <p class="text-gray-500 text-sm mb-2">Œuvres en catalogue</p>
                 <p class="text-4xl font-bold">{{ \App\Models\Artwork::count() }}</p>
-            </div>
-            <div class="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+            </a>
+
+            <!-- Carte Artistes -->
+            <a href="{{ route('admin.artists.index') }}" class="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-lg hover:border-black transition-all duration-300 block">
                 <p class="text-gray-500 text-sm mb-2">Artistes</p>
                 <p class="text-4xl font-bold">{{ \App\Models\Artist::count() }}</p>
-            </div>
-            <div class="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+            </a>
+
+            <!-- Carte Demandes de contact -->
+            <a href="{{ route('admin.contacts.index') }}" class="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-lg hover:border-black transition-all duration-300 block">
                 <p class="text-gray-500 text-sm mb-2">Demandes de contact</p>
                 <p class="text-4xl font-bold">{{ \App\Models\ContactRequest::count() ?? 0 }}</p>
-            </div>
+            </a>
+
+            <!-- Carte Abonnés Newsletter -->
+            <a href="{{ route('admin.newsletter.index') }}" class="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-lg hover:border-black transition-all duration-300 block">
+                <p class="text-gray-500 text-sm mb-2">Abonnés Newsletter</p>
+                <p class="text-4xl font-bold">{{ \App\Models\NewsletterSubscriber::count() }}</p>
+            </a>
         </div>
 
         <!-- Actions rapides -->
         <h2 class="text-xl font-medium mb-6">Actions rapides</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-            <!-- Bouton Ajouter une œuvre -->
+            <!-- Bouton Ajouter une œuvre (noir par défaut) -->
             <a href="{{ route('admin.artworks.create') }}" class="bg-[#1a1a1a] text-white p-6 text-center hover:bg-gray-800 transition flex flex-col items-center justify-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -38,29 +49,30 @@
                 Ajouter une œuvre
             </a>
 
-            <!-- Bouton Ajouter un artiste (corrigé) -->
-            <a href="{{ route('admin.artists.create') }}" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
+            <!-- Bouton Ajouter un artiste (blanc avec effet) -->
+            <a href="{{ route('admin.artists.create') }}" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 hover:border-black transition flex flex-col items-center justify-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Ajouter un artiste
             </a>
 
-            <!-- Bouton Créer une exposition -->
-            <a href="{{ route('admin.exhibitions.create') }}" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
+            <!-- Bouton Créer une exposition (blanc avec effet) -->
+            <a href="{{ route('admin.exhibitions.create') }}" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 hover:border-black transition flex flex-col items-center justify-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Créer une exposition
             </a>
 
-            <!-- Bouton Publier une actualité -->
-            <a href="{{ route('admin.news.create') }}" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 transition flex flex-col items-center justify-center gap-2">
+            <!-- Bouton Publier une actualité (blanc avec effet) -->
+            <a href="{{ route('admin.news.create') }}" class="bg-white border border-gray-200 text-gray-800 p-6 text-center hover:bg-gray-50 hover:border-black transition flex flex-col items-center justify-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Publier une actualité
             </a>
+
         </div>
     </div>
 @endsection

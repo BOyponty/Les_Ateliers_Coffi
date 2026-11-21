@@ -33,8 +33,9 @@
         <textarea name="description" rows="5" class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-black">{{ old('description', $exhibition->description ?? '') }}</textarea>
     </div>
 
+    <!-- Image 1 -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Image (5 Mo max)</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Image principale (5 Mo max)</label>
         @if(isset($exhibition) && $exhibition->image)
             <div class="mb-3">
                 <img src="{{ asset('storage/' . $exhibition->image) }}" class="w-32 h-32 object-cover rounded border">
@@ -42,5 +43,17 @@
             </div>
         @endif
         <input type="file" name="image" accept="image/*" class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-black">
+    </div>
+
+    <!-- Image 2 (Nouveau) -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Deuxième image (5 Mo max)</label>
+        @if(isset($exhibition) && $exhibition->image_2)
+            <div class="mb-3">
+                <img src="{{ asset('storage/' . $exhibition->image_2) }}" class="w-32 h-32 object-cover rounded border">
+                <p class="text-xs text-gray-500 mt-1">Image actuelle</p>
+            </div>
+        @endif
+        <input type="file" name="image_2" accept="image/*" class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-black">
     </div>
 </div>

@@ -29,12 +29,17 @@ class ExhibitionController extends Controller
             'start_date' => 'nullable|string|max:255',
             'end_date' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:5120',
+            'image_2' => 'nullable|image|max:5120', // <-- Ajouté
         ]);
 
         $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('exhibitions', 'public');
+        }
+
+        if ($request->hasFile('image_2')) {
+            $validated['image_2'] = $request->file('image_2')->store('exhibitions', 'public');
         }
 
         Exhibition::create($validated);
@@ -56,6 +61,7 @@ class ExhibitionController extends Controller
             'start_date' => 'nullable|string|max:255',
             'end_date' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:5120',
+            'image_2' => 'nullable|image|max:5120', // <-- Ajouté
         ]);
 
         if ($request->hasFile('image')) {
@@ -63,6 +69,13 @@ class ExhibitionController extends Controller
                 Storage::disk('public')->delete($exhibition->image);
             }
             $validated['image'] = $request->file('image')->store('exhibitions', 'public');
+        }
+
+        if ($request->hasFile('image_2')) {
+            if ($exhibition->image_2) {
+                Storage::disk('public')->delete($exhibition->image_2);
+            }
+            $validated['image_2'] = $request->file('image_2')->store('exhibitions', 'public');
         }
 
         $exhibition->update($validated);
@@ -75,6 +88,9 @@ class ExhibitionController extends Controller
     {
         if ($exhibition->image) {
             Storage::disk('public')->delete($exhibition->image);
+        }
+        if ($exhibition->image_2) {
+            Storage::disk('public')->delete($exhibition->image_2);
         }
         $exhibition->delete();
 

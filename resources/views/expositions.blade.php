@@ -5,38 +5,16 @@
     <section class="container mx-auto px-4 py-8 max-w-7xl" x-data="{
         activeSlide: 0,
         slides: [
-            {
-                img1: 'bg-gray-300',
-                img2: 'bg-gray-400',
-                title: 'Dig Where You Stand',
-                date: '15.03 - 30.06.2024',
-                subtitle: 'EXPOSITION COLLECTIVE',
-                desc: 'Une exposition collective majeure rassemblant plus de 20 artistes autour des thèmes de la décolonisation et de la restitution. Avec Zanele Muholi, Charbel Coffi et bien d\'autres.'
-            },
-            {
-                img1: 'bg-[#e67e22]',
-                img2: 'bg-[#2c3e50]',
-                title: 'Celles qui transmettent',
-                date: '10.01 - 28.02.2026',
-                subtitle: 'ARTISTES PLASTICIENNES',
-                desc: 'Une exposition mettant en lumière des artistes plasticiennes comme Princesse Keirath ou Sika da Silveira sur le thème de la transmission et de la condition féminine.'
-            },
-            {
-                img1: 'bg-[#8e44ad]',
-                img2: 'bg-[#d2b48c]',
-                title: 'Rooted - Charbel Coffi',
-                date: '05.05 - 20.07.2025',
-                subtitle: 'EXPOSITION PERSONNELLE',
-                desc: 'Le fondateur des Ateliers Coffi explore la réconciliation culturelle et l\'écologie à travers des textures de kaolin et de latérite.'
-            },
-            {
-                img1: 'bg-[#f1c40f]',
-                img2: 'bg-[#95a5a6]',
-                title: 'L\'Art nous unit, le Bénin brille !',
-                date: '01.09 - 15.10.2025',
-                subtitle: 'MODE & PEINTURE',
-                desc: 'Un événement qui fusionne mode et peinture avec le designer Jamal Chleuh et les artistes résidents des Ateliers Coffi.'
-            }
+            @foreach($exhibitions as $index => $exhibition)
+                {
+                    image: '{{ $exhibition->image ? asset('storage/' . $exhibition->image) : '' }}',
+                    image_2: '{{ $exhibition->image_2 ? asset('storage/' . $exhibition->image_2) : '' }}',
+                    title: '{{ addslashes($exhibition->title) }}',
+                    date: '{{ $exhibition->start_date }} - {{ $exhibition->end_date }}',
+                    subtitle: 'EXPOSITION',
+                    desc: '{{ addslashes($exhibition->description) }}'
+                }{{ $loop->last ? '' : ',' }}
+            @endforeach
         ],
         nextSlide() {
             this.activeSlide = (this.activeSlide + 1) % this.slides.length;
@@ -49,7 +27,7 @@
     }">
         <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center overflow-hidden relative">
 
-            <!-- Images (Défilantes) -->
+            <!-- Images (Défilantes - DEUX images côte à côte) -->
             <div class="w-full md:w-5/12 flex gap-4 relative min-h-[224px]">
                 <template x-for="(slide, index) in slides" :key="index">
                     <div class="w-full flex gap-4 absolute inset-0"
@@ -60,11 +38,23 @@
                          x-transition:leave="transition ease-in duration-500 absolute"
                          x-transition:leave-start="opacity-100 translate-x-0"
                          x-transition:leave-end="opacity-0 -translate-x-20">
-                        <div class="w-1/2 h-56 rounded-lg flex items-center justify-center text-white/50" :class="slide.img1">
-                            Illustration 1
+                        <!-- Image 1 -->
+                        <div class="w-1/2 h-56 rounded-lg overflow-hidden bg-gray-200">
+                            <template x-if="slide.image">
+                                <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!slide.image">
+                                <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">Image 1</div>
+                            </template>
                         </div>
-                        <div class="w-1/2 h-56 rounded-lg flex items-center justify-center text-white/50" :class="slide.img2">
-                            Illustration 2
+                        <!-- Image 2 -->
+                        <div class="w-1/2 h-56 rounded-lg overflow-hidden bg-gray-200">
+                            <template x-if="slide.image_2">
+                                <img :src="slide.image_2" :alt="slide.title" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!slide.image_2">
+                                <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">Image 2</div>
+                            </template>
                         </div>
                     </div>
                 </template>
@@ -99,134 +89,40 @@
         </div>
     </section>
 
-    <!-- Section Grille Masonry (15 images) avec animations -->
+    <!-- Section Grille des Expositions (remplace la grille des œuvres) -->
     <section class="container mx-auto px-4 py-8 max-w-7xl">
-        <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            @php
-                $artworksArray = $artworks->toArray();
-                $total = count($artworksArray);
-                // Compteur global pour attribuer les bonnes hauteurs
-                $globalIndex = 0;
-            @endphp
-
-            <!-- Colonne 1 -->
-            <div class="space-y-6 flex flex-col">
-                @foreach($artworks->take(3) as $artwork)
-                    @php $heightClass = $globalIndex == 0 ? 'h-96' : ($globalIndex == 1 ? 'h-64' : 'h-64'); $globalIndex++; @endphp
-                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                        <div class="overflow-hidden {{ $heightClass }}">
-                            @if($artwork->image)
-                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                            @else
-                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
-                            @endif
-                        </div>
-                        <div class="p-4 bg-white relative z-10">
-                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
-                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
-                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
-                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
-                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                        </div>
+            @forelse($exhibitions as $exhibition)
+                <div class="bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
+                    <!-- Image de l'exposition -->
+                    <div class="h-64 overflow-hidden">
+                        @if($exhibition->image)
+                            <img src="{{ asset('storage/' . $exhibition->image) }}"
+                                 alt="{{ $exhibition->title }}"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        @else
+                            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                                Image non disponible
+                            </div>
+                        @endif
                     </div>
-                @endforeach
-            </div>
-
-            <!-- Colonne 2 -->
-            <div class="space-y-6 flex flex-col">
-                @foreach($artworks->skip(3)->take(4) as $artwork)
-                    @php
-                        $heightClass = $globalIndex == 3 ? 'h-48' : ($globalIndex == 4 ? 'h-96' : ($globalIndex == 5 ? 'h-64' : 'h-64'));
-                        $globalIndex++;
-                    @endphp
-                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                        <div class="overflow-hidden {{ $heightClass }}">
-                            @if($artwork->image)
-                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                            @else
-                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
-                            @endif
-                        </div>
-                        <div class="p-4 bg-white relative z-10">
-                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
-                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
-                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
-                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
-                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                        </div>
+                    <!-- Infos de l'exposition -->
+                    <div class="p-6">
+                        <h3 class="font-serif text-xl font-medium mb-2">{{ $exhibition->title }}</h3>
+                        <p class="text-sm text-gray-500 mb-4">{{ $exhibition->start_date }} - {{ $exhibition->end_date }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
+                            {{ Str::limit($exhibition->description, 150) }}
+                        </p>
+                        <a href="#" class="text-sm font-medium inline-flex items-center gap-2 border-b border-black pb-0.5 hover:opacity-70 transition">
+                            En savoir plus
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </a>
                     </div>
-                @endforeach
-            </div>
-
-            <!-- Colonne 3 -->
-            <div class="space-y-6 flex flex-col">
-                @foreach($artworks->skip(7)->take(2) as $artwork)
-                    @php $heightClass = $globalIndex == 7 ? 'h-96' : 'h-[500px]'; $globalIndex++; @endphp
-                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                        <div class="overflow-hidden {{ $heightClass }}">
-                            @if($artwork->image)
-                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                            @else
-                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
-                            @endif
-                        </div>
-                        <div class="p-4 bg-white relative z-10">
-                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
-                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
-                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
-                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
-                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Colonne 4 -->
-            <div class="space-y-6 flex flex-col">
-                @foreach($artworks->skip(9)->take(3) as $artwork)
-                    @php $heightClass = $globalIndex == 9 ? 'h-80' : ($globalIndex == 10 ? 'h-96' : 'h-96'); $globalIndex++; @endphp
-                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                        <div class="overflow-hidden {{ $heightClass }}">
-                            @if($artwork->image)
-                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                            @else
-                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
-                            @endif
-                        </div>
-                        <div class="p-4 bg-white relative z-10">
-                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
-                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
-                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
-                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
-                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Colonne 5 -->
-            <div class="space-y-6 flex flex-col">
-                @foreach($artworks->skip(12)->take(3) as $artwork)
-                    @php $heightClass = $globalIndex == 12 ? 'h-80' : ($globalIndex == 13 ? 'h-64' : 'h-96'); $globalIndex++; @endphp
-                    <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                        <div class="overflow-hidden {{ $heightClass }}">
-                            @if($artwork->image)
-                                <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                            @else
-                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Image</div>
-                            @endif
-                        </div>
-                        <div class="p-4 bg-white relative z-10">
-                            <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block font-medium text-sm group-hover:text-gray-600 transition-colors">{{ $artwork->artist->name }}</a>
-                            <p class="text-sm text-gray-500 italic mt-1">{{ $artwork->title }}</p>
-                            <p class="text-[11px] text-gray-400 mt-3">{{ $artwork->year }}</p>
-                            <p class="text-[11px] text-gray-400">{{ $artwork->technique }}</p>
-                            <a href="{{ route('artwork.detail', $artwork->slug) }}" class="text-xs border-b border-black pb-0.5 inline-block mt-3 group-hover:border-gray-500 transition-colors">En savoir plus</a>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+                </div>
+            @empty
+                <p class="col-span-3 text-center text-gray-500 py-12">Aucune exposition pour le moment.</p>
+            @endforelse
 
         </div>
     </section>
