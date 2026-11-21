@@ -35,12 +35,20 @@ class ArtworkController extends Controller
             'price' => 'nullable|numeric|min:0',
             'status' => 'required|in:disponible,vendu,exposé',
             'image' => 'nullable|image|max:5120',
+            'image_2' => 'nullable|image|max:5120', // <-- Ajouté
+            'image_3' => 'nullable|image|max:5120', // <-- Ajouté
         ]);
 
         $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('artworks', 'public');
+        }
+        if ($request->hasFile('image_2')) {
+            $validated['image_2'] = $request->file('image_2')->store('artworks', 'public');
+        }
+        if ($request->hasFile('image_3')) {
+            $validated['image_3'] = $request->file('image_3')->store('artworks', 'public');
         }
 
         Artwork::create($validated);
@@ -67,13 +75,21 @@ class ArtworkController extends Controller
             'price' => 'nullable|numeric|min:0',
             'status' => 'required|in:disponible,vendu,exposé',
             'image' => 'nullable|image|max:5120',
+            'image_2' => 'nullable|image|max:5120', // <-- Ajouté
+            'image_3' => 'nullable|image|max:5120', // <-- Ajouté
         ]);
 
         if ($request->hasFile('image')) {
-            if ($artwork->image) {
-                Storage::disk('public')->delete($artwork->image);
-            }
+            if ($artwork->image) Storage::disk('public')->delete($artwork->image);
             $validated['image'] = $request->file('image')->store('artworks', 'public');
+        }
+        if ($request->hasFile('image_2')) {
+            if ($artwork->image_2) Storage::disk('public')->delete($artwork->image_2);
+            $validated['image_2'] = $request->file('image_2')->store('artworks', 'public');
+        }
+        if ($request->hasFile('image_3')) {
+            if ($artwork->image_3) Storage::disk('public')->delete($artwork->image_3);
+            $validated['image_3'] = $request->file('image_3')->store('artworks', 'public');
         }
 
         $artwork->update($validated);
@@ -84,9 +100,9 @@ class ArtworkController extends Controller
 
     public function destroy(Artwork $artwork)
     {
-        if ($artwork->image) {
-            Storage::disk('public')->delete($artwork->image);
-        }
+        if ($artwork->image) Storage::disk('public')->delete($artwork->image);
+        if ($artwork->image_2) Storage::disk('public')->delete($artwork->image_2);
+        if ($artwork->image_3) Storage::disk('public')->delete($artwork->image_3);
         $artwork->delete();
 
         return redirect()->route('admin.artworks.index')

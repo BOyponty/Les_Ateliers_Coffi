@@ -9,12 +9,24 @@
 @endif
 
 <div class="space-y-6">
+    <!-- Titre -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Titre de l'exposition *</label>
         <input type="text" name="title" value="{{ old('title', $exhibition->title ?? '') }}" required
                class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-black">
     </div>
 
+    <!-- Statut (Nouveau) -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Statut *</label>
+        <select name="status" required class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-black">
+            <option value="à venir" {{ old('status', $exhibition->status ?? '') === 'à venir' ? 'selected' : '' }}>À venir</option>
+            <option value="en cours" {{ old('status', $exhibition->status ?? '') === 'en cours' ? 'selected' : '' }}>En cours</option>
+            <option value="passée" {{ old('status', $exhibition->status ?? '') === 'passée' ? 'selected' : '' }}>Passée</option>
+        </select>
+    </div>
+
+    <!-- Dates -->
     <div class="grid grid-cols-2 gap-4">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Date de début</label>
@@ -28,6 +40,7 @@
         </div>
     </div>
 
+    <!-- Description -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
         <textarea name="description" rows="5" class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-black">{{ old('description', $exhibition->description ?? '') }}</textarea>
@@ -45,7 +58,7 @@
         <input type="file" name="image" accept="image/*" class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-black">
     </div>
 
-    <!-- Image 2 (Nouveau) -->
+    <!-- Image 2 -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Deuxième image (5 Mo max)</label>
         @if(isset($exhibition) && $exhibition->image_2)

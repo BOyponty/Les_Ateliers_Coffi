@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Message de succès (s'affiche après l'envoi du formulaire) -->
+    <!-- Message de succès -->
     @if(session('success'))
         <div class="container mx-auto px-4 mt-8 max-w-7xl">
             <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4">
@@ -10,28 +10,49 @@
         </div>
     @endif
 
-    <!-- On initialise la variable Alpine pour gérer l'ouverture du modal -->
-    <section class="container mx-auto px-4 py-12 max-w-7xl" x-data="{ infoModalOpen: false }">
+    <section class="container mx-auto px-4 py-12 max-w-7xl"
+             x-data="{
+                 activeImage: '{{ $artwork->image ? asset('storage/' . $artwork->image) : '' }}',
+                 infoModalOpen: false
+             }">
 
         <div class="flex flex-col lg:flex-row gap-16">
             <!-- Colonne de Gauche : Images -->
             <div class="w-full lg:w-1/2 flex flex-col gap-4">
+                <!-- Image principale -->
                 <div class="bg-[#dcdcdc] rounded-xl w-full h-[500px] lg:h-[650px] overflow-hidden">
-                    @if($artwork->image)
-                        <img src="{{ asset('storage/' . $artwork->image) }}"
-                             alt="{{ $artwork->title }}"
-                             class="w-full h-full object-cover">
-                    @endif
+                    <template x-if="activeImage">
+                        <img :src="activeImage" alt="{{ $artwork->title }}" class="w-full h-full object-cover">
+                    </template>
+                    <template x-if="!activeImage">
+                        <div class="w-full h-full flex items-center justify-center text-gray-400">Image non disponible</div>
+                    </template>
                 </div>
+                <!-- Miniatures -->
                 <div class="flex gap-4">
-                    <div class="bg-[#dcdcdc] rounded-xl w-32 h-32 lg:w-40 lg:h-40"></div>
-                    <div class="bg-[#dcdcdc] rounded-xl w-32 h-32 lg:w-40 lg:h-40"></div>
+                    @if($artwork->image)
+                        <div @click="activeImage = '{{ asset('storage/' . $artwork->image) }}'"
+                             class="cursor-pointer bg-[#dcdcdc] rounded-xl w-32 h-32 lg:w-40 lg:h-40 overflow-hidden border-2 border-transparent hover:border-black transition">
+                            <img src="{{ asset('storage/' . $artwork->image) }}" alt="Miniature 1" class="w-full h-full object-cover">
+                        </div>
+                    @endif
+                    @if($artwork->image_2)
+                        <div @click="activeImage = '{{ asset('storage/' . $artwork->image_2) }}'"
+                             class="cursor-pointer bg-[#dcdcdc] rounded-xl w-32 h-32 lg:w-40 lg:h-40 overflow-hidden border-2 border-transparent hover:border-black transition">
+                            <img src="{{ asset('storage/' . $artwork->image_2) }}" alt="Miniature 2" class="w-full h-full object-cover">
+                        </div>
+                    @endif
+                    @if($artwork->image_3)
+                        <div @click="activeImage = '{{ asset('storage/' . $artwork->image_3) }}'"
+                             class="cursor-pointer bg-[#dcdcdc] rounded-xl w-32 h-32 lg:w-40 lg:h-40 overflow-hidden border-2 border-transparent hover:border-black transition">
+                            <img src="{{ asset('storage/' . $artwork->image_3) }}" alt="Miniature 3" class="w-full h-full object-cover">
+                        </div>
+                    @endif
                 </div>
             </div>
 
             <!-- Colonne de Droite : Informations -->
             <div class="w-full lg:w-1/2 flex flex-col pt-2 lg:pt-4">
-                <!-- Le titre est maintenant un lien vers la page Artiste -->
                 <a href="{{ route('artist.detail', $artwork->artist->slug) }}" class="block text-4xl lg:text-5xl font-normal mb-6 text-[#1a1a1a] hover:opacity-70 transition">
                     {{ $artwork->artist->name }}
                 </a>
@@ -44,7 +65,6 @@
                     <p>{{ $artwork->description }}</p>
                 </div>
 
-                <!-- Bouton Plus d'info qui ouvre le modal -->
                 <div class="mt-8">
                     <button @click="infoModalOpen = true" class="bg-[#555555] text-white px-8 py-3 rounded hover:bg-[#1a1a1a] transition text-base">
                         Plus d'info
@@ -74,60 +94,37 @@
 
         <!-- MODAL / POPUP DE CONTACT -->
         <div x-show="infoModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 overflow-y-auto">
-
-            <!-- Conteneur du Modal -->
             <div @click.away="infoModalOpen = false" class="bg-white w-full max-w-5xl relative flex flex-col md:flex-row shadow-2xl my-8">
-
-                <!-- Bouton Fermer (Croix noire) -->
                 <button @click="infoModalOpen = false" class="absolute top-0 right-0 bg-[#0f1713] text-white w-12 h-12 flex items-center justify-center hover:bg-gray-800 transition z-10">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
-
-                <!-- Colonne Gauche : Titre et Image -->
                 <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col">
                     <h2 class="text-2xl font-normal mb-8 text-[#1a1a1a]">{{ $artwork->title }}</h2>
                     @if($artwork->image)
-                        <img src="{{ asset('storage/' . $artwork->image) }}"
-                             alt="{{ $artwork->title }}"
-                             class="w-full h-72 md:h-80 object-cover">
+                        <img src="{{ asset('storage/' . $artwork->image) }}" alt="{{ $artwork->title }}" class="w-full h-72 md:h-80 object-cover">
                     @else
                         <div class="bg-[#dcdcdc] w-full h-72 md:h-80"></div>
                     @endif
                 </div>
-
-                <!-- Colonne Droite : Formulaire -->
                 <div class="w-full md:w-1/2 p-10 md:p-14 pt-4 md:pt-14 flex flex-col justify-center">
                     <form action="{{ route('contact.request.store') }}" method="POST" class="space-y-4">
                         @csrf
-                        <!-- Champ caché pour l'ID de l'œuvre -->
                         <input type="hidden" name="artwork_id" value="{{ $artwork->id }}">
-
-                        <!-- Nom & Prénom -->
                         <div class="grid grid-cols-2 gap-4">
                             <input type="text" name="last_name" placeholder="Nom" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
                             <input type="text" name="first_name" placeholder="Prénom" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
                         </div>
-
-                        <!-- Email -->
                         <input type="email" name="email" placeholder="Email" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
-
-                        <!-- Téléphone & Sujet -->
                         <div class="grid grid-cols-2 gap-4">
                             <input type="tel" name="phone" placeholder="Téléphone" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black">
                             <input type="text" value="{{ $artwork->title }}" readonly class="w-full border border-gray-300 px-4 py-3 text-sm bg-gray-50 text-gray-600 focus:outline-none">
                         </div>
-
-                        <!-- Message -->
                         <textarea name="message" placeholder="Message" rows="5" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black resize-none"></textarea>
-
-                        <!-- Bouton Envoyer -->
                         <button type="submit" class="w-full bg-[#0f1713] text-white py-4 text-sm tracking-wider uppercase hover:bg-black transition mt-2">
                             Envoyer une demande d'information
                         </button>
-
-                        <!-- Texte Légal -->
                         <p class="text-[11px] text-gray-600 leading-relaxed mt-4">
                             Nous traitons les données personnelles fournies conformément à la politique de confidentialité en vigueur.<br>
                             Vous pouvez vous désabonner à tout moment en cliquant sur le lien dans tous les courriels.

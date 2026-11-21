@@ -28,8 +28,9 @@ class ExhibitionController extends Controller
             'description' => 'nullable|string',
             'start_date' => 'nullable|string|max:255',
             'end_date' => 'nullable|string|max:255',
+            'status' => 'required|in:à venir,en cours,passée', // <-- Ajouté
             'image' => 'nullable|image|max:5120',
-            'image_2' => 'nullable|image|max:5120', // <-- Ajouté
+            'image_2' => 'nullable|image|max:5120',
         ]);
 
         $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
@@ -60,8 +61,9 @@ class ExhibitionController extends Controller
             'description' => 'nullable|string',
             'start_date' => 'nullable|string|max:255',
             'end_date' => 'nullable|string|max:255',
+            'status' => 'required|in:à venir,en cours,passée', // <-- Ajouté
             'image' => 'nullable|image|max:5120',
-            'image_2' => 'nullable|image|max:5120', // <-- Ajouté
+            'image_2' => 'nullable|image|max:5120',
         ]);
 
         if ($request->hasFile('image')) {

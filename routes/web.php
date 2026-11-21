@@ -141,5 +141,10 @@ Route::get('/expositions', function () {
     ]);
 })->name('expositions');
 
+Route::get('/exposition/{slug}', function ($slug) {
+    $exhibition = \App\Models\Exhibition::where('slug', $slug)->firstOrFail();
+    return view('exposition_detail', compact('exhibition'));
+})->name('exposition.detail');
+
 // Routes d'authentification de Breeze
 require __DIR__.'/auth.php';

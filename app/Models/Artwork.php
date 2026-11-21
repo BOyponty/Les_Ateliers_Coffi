@@ -19,6 +19,8 @@ class Artwork extends Model
         'year',
         'price',
         'image',
+        'image_2', // <-- Ajouté
+        'image_3', // <-- Ajouté
         'status',
     ];
 

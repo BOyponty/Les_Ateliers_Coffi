@@ -16,5 +16,7 @@ protected $fillable = [
     'end_date',
     'image',
     'image_2', // <-- Ajouté
+    'status',
 ];
+
 }

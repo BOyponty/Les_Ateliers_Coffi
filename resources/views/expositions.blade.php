@@ -38,7 +38,6 @@
                          x-transition:leave="transition ease-in duration-500 absolute"
                          x-transition:leave-start="opacity-100 translate-x-0"
                          x-transition:leave-end="opacity-0 -translate-x-20">
-                        <!-- Image 1 -->
                         <div class="w-1/2 h-56 rounded-lg overflow-hidden bg-gray-200">
                             <template x-if="slide.image">
                                 <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover">
@@ -47,7 +46,6 @@
                                 <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">Image 1</div>
                             </template>
                         </div>
-                        <!-- Image 2 -->
                         <div class="w-1/2 h-56 rounded-lg overflow-hidden bg-gray-200">
                             <template x-if="slide.image_2">
                                 <img :src="slide.image_2" :alt="slide.title" class="w-full h-full object-cover">
@@ -89,14 +87,15 @@
         </div>
     </section>
 
-    <!-- Section Grille des Expositions (remplace la grille des œuvres) -->
+    <!-- Section Grille Masonry (expositions réelles, sans doublon) -->
     <section class="container mx-auto px-4 py-8 max-w-7xl">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-6 space-y-6">
 
             @forelse($exhibitions as $exhibition)
-                <div class="bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
-                    <!-- Image de l'exposition -->
-                    <div class="h-64 overflow-hidden">
+                <div class="masonry-card break-inside-avoid bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer">
+
+                    <!-- Image avec hauteur variable pour le Masonry -->
+                    <div class="overflow-hidden {{ $loop->index % 4 == 0 ? 'h-96' : ($loop->index % 3 == 0 ? 'h-64' : ($loop->index % 2 == 0 ? 'h-80' : 'h-72')) }}">
                         @if($exhibition->image)
                             <img src="{{ asset('storage/' . $exhibition->image) }}"
                                  alt="{{ $exhibition->title }}"
@@ -107,21 +106,22 @@
                             </div>
                         @endif
                     </div>
-                    <!-- Infos de l'exposition -->
-                    <div class="p-6">
-                        <h3 class="font-serif text-xl font-medium mb-2">{{ $exhibition->title }}</h3>
-                        <p class="text-sm text-gray-500 mb-4">{{ $exhibition->start_date }} - {{ $exhibition->end_date }}</p>
-                        <p class="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
-                            {{ Str::limit($exhibition->description, 150) }}
+
+                    <!-- Contenu de la carte -->
+                    <div class="p-4 bg-white relative z-10">
+                        <h3 class="font-serif text-lg font-medium mb-1 leading-tight">{{ $exhibition->title }}</h3>
+                        <p class="text-sm text-gray-500 mb-2">{{ $exhibition->start_date }} - {{ $exhibition->end_date }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                            {{ Str::limit($exhibition->description, 100) }}
                         </p>
-                        <a href="#" class="text-sm font-medium inline-flex items-center gap-2 border-b border-black pb-0.5 hover:opacity-70 transition">
+                        <a href="{{ route('exposition.detail', $exhibition->slug) }}"
+                           class="text-xs font-medium border-b border-black pb-0.5 inline-block hover:opacity-70 transition">
                             En savoir plus
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </a>
                     </div>
                 </div>
             @empty
-                <p class="col-span-3 text-center text-gray-500 py-12">Aucune exposition pour le moment.</p>
+                <p class="col-span-5 text-center text-gray-500 py-12">Aucune exposition pour le moment.</p>
             @endforelse
 
         </div>
