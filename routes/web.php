@@ -15,6 +15,7 @@ use App\Models\Artwork;
 use App\Models\Exhibition;
 use App\Models\News;
 use Illuminate\Support\Facades\Route;
+use Barryvdh\DomPDF\Facade\Pdf; // <-- Import ajouté
 
 // ==========================================
 // ROUTES PUBLIQUES
@@ -42,6 +43,13 @@ Route::get('/artiste/{slug}', function ($slug) {
     ]);
 })->name('artist.detail');
 
+// Route pour télécharger la biographie en PDF (AJOUTÉE)
+Route::get('/artiste/{slug}/biographie', function ($slug) {
+    $artist = Artist::where('slug', $slug)->firstOrFail();
+    $pdf = Pdf::loadView('pdf.biographie', compact('artist'));
+    return $pdf->download('biographie-' . $artist->slug . '.pdf');
+})->name('artist.biography');
+
 Route::get('/oeuvres', function () {
     return view('artworks', [
         'artworks' => Artwork::with('artist')->latest()->get(),
@@ -62,6 +70,11 @@ Route::get('/expositions', function () {
         'artworks' => Artwork::with('artist')->latest()->get(),
     ]);
 })->name('expositions');
+
+Route::get('/exposition/{slug}', function ($slug) {
+    $exhibition = \App\Models\Exhibition::where('slug', $slug)->firstOrFail();
+    return view('exposition_detail', compact('exhibition'));
+})->name('exposition.detail');
 
 Route::get('/nouvelles', function () {
     return view('nouvelles', [
@@ -133,18 +146,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-Route::get('/expositions', function () {
-    return view('expositions', [
-        'exhibitions' => Exhibition::latest()->get(),
-        'artworks' => Artwork::with('artist')->latest()->get(),
-    ]);
-})->name('expositions');
-
-Route::get('/exposition/{slug}', function ($slug) {
-    $exhibition = \App\Models\Exhibition::where('slug', $slug)->firstOrFail();
-    return view('exposition_detail', compact('exhibition'));
-})->name('exposition.detail');
 
 // Routes d'authentification de Breeze
 require __DIR__.'/auth.php';

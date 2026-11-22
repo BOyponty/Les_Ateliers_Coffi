@@ -14,11 +14,12 @@
                     {!! nl2br(e($artist->biography)) !!}
                 </div>
 
-                <!-- Bouton Télécharger -->
+                <!-- Bouton Télécharger (CORRIGÉ) -->
                 <div class="mt-10">
-                    <button class="border border-gray-400 text-gray-600 px-6 py-2.5 text-sm hover:border-black hover:text-black transition">
+                    <a href="{{ route('artist.biography', $artist->slug) }}"
+                       class="inline-block border border-gray-400 text-gray-600 px-6 py-2.5 text-sm hover:border-black hover:text-black transition">
                         Biographie à télécharger
-                    </button>
+                    </a>
                 </div>
             </div>
 

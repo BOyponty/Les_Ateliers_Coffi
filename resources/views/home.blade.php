@@ -4,12 +4,14 @@
     <!-- On garde le x-data global pour les filtres -->
     <div x-data="{ activeFilter: 'all' }">
 
-        <!-- Section Carrousel (Expositions) -->
+        <!-- Section Carrousel (Expositions) - IDENTIQUE à la page Expositions -->
         <section class="container mx-auto px-4 py-8 max-w-7xl" x-data="{
             activeSlide: 0,
             slides: [
                 @foreach($exhibitions as $index => $exhibition)
                     {
+                        image: '{{ $exhibition->image ? asset('storage/' . $exhibition->image) : '' }}',
+                        image_2: '{{ $exhibition->image_2 ? asset('storage/' . $exhibition->image_2) : '' }}',
                         title: '{{ addslashes($exhibition->title) }}',
                         date: '{{ $exhibition->start_date }} - {{ $exhibition->end_date }}',
                         subtitle: 'EXPOSITION',
@@ -27,10 +29,36 @@
             }
         }">
             <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
-                <!-- Images (Fixes) -->
-                <div class="w-full md:w-5/12 flex gap-4">
-                    <div class="w-1/2 h-56 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-sm">Illustration 1</div>
-                    <div class="w-1/2 h-56 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-sm">Illustration 2</div>
+
+                <!-- Images (Défilantes - DEUX images côte à côte) -->
+                <div class="w-full md:w-5/12 flex gap-4 relative min-h-[224px]">
+                    <template x-for="(slide, index) in slides" :key="index">
+                        <div class="w-full flex gap-4 absolute inset-0"
+                             x-show="activeSlide === index"
+                             x-transition:enter="transition ease-out duration-700"
+                             x-transition:enter-start="opacity-0 translate-x-20"
+                             x-transition:enter-end="opacity-100 translate-x-0"
+                             x-transition:leave="transition ease-in duration-500 absolute"
+                             x-transition:leave-start="opacity-100 translate-x-0"
+                             x-transition:leave-end="opacity-0 -translate-x-20">
+                            <div class="w-1/2 h-56 rounded-lg overflow-hidden bg-gray-200">
+                                <template x-if="slide.image">
+                                    <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover">
+                                </template>
+                                <template x-if="!slide.image">
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">Image 1</div>
+                                </template>
+                            </div>
+                            <div class="w-1/2 h-56 rounded-lg overflow-hidden bg-gray-200">
+                                <template x-if="slide.image_2">
+                                    <img :src="slide.image_2" :alt="slide.title" class="w-full h-full object-cover">
+                                </template>
+                                <template x-if="!slide.image_2">
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">Image 2</div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
 
                 <!-- Texte (Défilant) -->
@@ -105,7 +133,7 @@
             </div>
         </section>
 
-        <!-- Section Newsletter (MISE À JOUR) -->
+        <!-- Section Newsletter -->
         <section class="container mx-auto px-4 py-16 max-w-7xl">
             <div class="border border-gray-200 rounded-lg p-8 md:p-12 max-w-4xl mx-auto">
                 <h3 class="font-serif text-2xl mb-6">Inscrivez-vous à notre newsletter.</h3>

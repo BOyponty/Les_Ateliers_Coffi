@@ -12,8 +12,8 @@
 <body class="font-sans antialiased bg-white text-gray-900 flex flex-col min-h-screen">
 
     <!-- Header -->
-    <header class="bg-white pt-6 pb-4">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+    <header class="bg-white pt-6 pb-4 ">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between ">
             <!-- Logo + Nom -->
             <a href="/" class="flex items-center gap-4">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo Les Ateliers Coffi" class="h-16 w-auto object-contain">
